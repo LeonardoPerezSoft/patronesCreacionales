@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 Ejemplo Práctico: Gestor de Impresión con Singleton
 
@@ -24,9 +24,9 @@ from datetime import datetime
 from time import sleep
 
 # Agregar la raíz del proyecto al path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent))
 
-from src.singleton_decorator import singleton
+from singleton_decorator import singleton
 
 
 @singleton
@@ -50,7 +50,7 @@ class GestorImpresion:
     
     def enviar_trabajo(self, empleado: str, documento: str, paginas: int) -> int:
         """
-        Un empleado envía un trabajo a la impresora.
+        Un empleado envia un trabajo a la impresora.
         
         Args:
             empleado: Nombre del empleado que solicita la impresión
@@ -73,8 +73,8 @@ class GestorImpresion:
         # Agregar a la cola
         self.cola_trabajos.append(trabajo)
         
-        print(f"[{trabajo['timestamp']}] ✉️  {empleado} envía '{documento}' ({paginas} pág.)")
-        print(f"            └─ ID: {trabajo['id']} | Posición en cola: {len(self.cola_trabajos)}")
+        print(f"[{trabajo['timestamp']}]   {empleado} envia '{documento}' ({paginas} pag.)")
+        print(f"            ─ ID: {trabajo['id']} | Posición en cola: {len(self.cola_trabajos)}")
         
         return trabajo["id"]
     
@@ -97,8 +97,8 @@ class GestorImpresion:
         # Simular tiempo de impresión (0.2 segundos por página)
         tiempo_impresion = trabajo["paginas"] * 0.2
         
-        print(f"\n[🖨️  IMPRIMIENDO] {trabajo['empleado']} - '{trabajo['documento']}'")
-        print(f"    Páginas: {trabajo['paginas']} | Tiempo estimado: {tiempo_impresion:.1f}s")
+        print(f"\n[  IMPRIMIENDO] {trabajo['empleado']} - '{trabajo['documento']}'")
+        print(f"    Paginas: {trabajo['paginas']} | Tiempo estimado: {tiempo_impresion:.1f}s")
         
         # Simular impresión
         sleep(tiempo_impresion)
@@ -108,7 +108,7 @@ class GestorImpresion:
         trabajo["timestamp_completado"] = datetime.now().strftime("%H:%M:%S")
         self.trabajos_procesados.append(trabajo)
         
-        print(f"[✅ LISTO] {trabajo['documento']} impreso para {trabajo['empleado']}")
+        print(f"[ LISTO] {trabajo['documento']} impreso para {trabajo['empleado']}")
         
         self.trabajo_actual = None
         self.impresora_ocupada = False
@@ -131,58 +131,33 @@ class GestorImpresion:
         reporte += "=" * 70 + "\n\n"
         
         # Trabajos procesados
-        reporte += f"✅ TRABAJOS COMPLETADOS ({len(self.trabajos_procesados)}):\n"
+        reporte += f" TRABAJOS COMPLETADOS ({len(self.trabajos_procesados)}):\n"
         reporte += "-" * 70 + "\n"
         
         if self.trabajos_procesados:
             for i, trabajo in enumerate(self.trabajos_procesados, 1):
                 reporte += f"{i}. [{trabajo['timestamp']}] {trabajo['empleado']}\n"
-                reporte += f"   └─ Documento: {trabajo['documento']}\n"
-                reporte += f"   └─ Páginas: {trabajo['paginas']}\n"
-                reporte += f"   └─ Completado: {trabajo.get('timestamp_completado', 'N/A')}\n\n"
+                reporte += f"   ─ Documento: {trabajo['documento']}\n"
+                reporte += f"   ─ Paginas: {trabajo['paginas']}\n"
+                reporte += f"   ─ Completado: {trabajo.get('timestamp_completado', 'N/A')}\n\n"
         else:
             reporte += "No hay trabajos completados aún.\n\n"
         
         # Trabajos en cola
-        reporte += f"⏳ TRABAJOS EN COLA ({len(self.cola_trabajos)}):\n"
+        reporte += f" TRABAJOS EN COLA ({len(self.cola_trabajos)}):\n"
         reporte += "-" * 70 + "\n"
         
         if self.cola_trabajos:
             for i, trabajo in enumerate(self.cola_trabajos, 1):
                 reporte += f"{i}. [{trabajo['timestamp']}] {trabajo['empleado']}\n"
-                reporte += f"   └─ Documento: {trabajo['documento']}\n"
-                reporte += f"   └─ Páginas: {trabajo['paginas']}\n\n"
+                reporte += f"   ─ Documento: {trabajo['documento']}\n"
+                reporte += f"   ─ Paginas: {trabajo['paginas']}\n\n"
         else:
             reporte += "No hay trabajos en espera.\n\n"
         
         reporte += "=" * 70 + "\n"
         return reporte
 
-
-def simular_oficina_sin_singleton():
-    """
-    ESCENARIO PROBLEMÁTICO: Sin Singleton
-    (Ilustración del problema - no es código real)
-    """
-    print("\n" + "=" * 70)
-    print("ESCENARIO SIN SINGLETON (¿QUÉ PASARÍA?)")
-    print("=" * 70)
-    print("""
-    Cada empleado crearía su propia "cola":
-    
-    cola_juan = ColasDeImpresion()        # 🚨 Su propia cola
-    cola_maria = ColasDeImpresion()       # 🚨 Su propia cola
-    cola_pedro = ColasDeImpresion()       # 🚨 Su propia cola
-    
-    PROBLEMAS:
-    ❌ Múltiples colas incompatibles
-    ❌ Trabajos pueden perderse o duplicarse
-    ❌ No hay control sobre el orden de impresión
-    ❌ La impresora recibe comandos conflictivos
-    ❌ Imposible seguimiento centralizado
-    
-    RESULTADO: 📄 CAOS EN LA OFICINA 📄
-    """)
 
 
 def simular_oficina_con_singleton():
@@ -197,8 +172,8 @@ def simular_oficina_con_singleton():
     # Obtener la instancia ÚNICA del gestor
     gestor = GestorImpresion()
     
-    # Simular que 3 empleados envían trabajos
-    print("📝 FASE 1: Empleados envían trabajos a imprimir")
+    # Simular que 3 empleados envian trabajos
+    print("� FASE 1: Empleados envian trabajos a imprimir")
     print("-" * 70)
     
     # Empleado 1
@@ -210,14 +185,14 @@ def simular_oficina_con_singleton():
     # Empleado 3
     gestor.enviar_trabajo("Pedro Ruiz", "Contrato Proveedor", paginas=8)
     
-    # Empleado 1 envía otro trabajo
+    # Empleado 1 envia otro trabajo
     gestor.enviar_trabajo("Juan García", "Factura #001", paginas=2)
     
-    # Empleado 2 envía otro trabajo
+    # Empleado 2 envia otro trabajo
     gestor.enviar_trabajo("María López", "Email Confirmación", paginas=1)
     
     # Mostrar estado de la cola
-    print("\n📊 FASE 2: Estado de la Cola")
+    print("\n� FASE 2: Estado de la Cola")
     print("-" * 70)
     estado = gestor.obtener_estado_cola()
     print(f"Trabajos en cola: {estado['trabajos_en_cola']}")
@@ -225,7 +200,7 @@ def simular_oficina_con_singleton():
     print(f"¿Impresora ocupada?: {'Sí' if estado['impresora_ocupada'] else 'No'}")
     
     # Procesar todos los trabajos
-    print("\n🖨️  FASE 3: Procesamiento de trabajos")
+    print("\n  FASE 3: Procesamiento de trabajos")
     print("-" * 70)
     
     trabajo_num = 1
@@ -259,11 +234,11 @@ def demostrar_punto_acceso_global():
     print(f"ID de gestor2: {id(gestor2)}")
     print(f"ID de gestor3: {id(gestor3)}")
     
-    print("\n✅ CONFIRMADO: Todos los empleados acceden a la MISMA instancia")
+    print("\n CONFIRMADO: Todos los empleados acceden a la MISMA instancia")
     print("   Esto garantiza una única cola de impresión para toda la oficina.")
     
     # Enviar trabajo desde diferentes referencias
-    print("\n📝 Prueba de funcionamiento:")
+    print("\n� Prueba de funcionamiento:")
     gestor1.enviar_trabajo("Juan (ref1)", "Documento 1", 2)
     gestor2.enviar_trabajo("María (ref2)", "Documento 2", 3)
     gestor3.enviar_trabajo("Pedro (ref3)", "Documento 3", 1)
@@ -280,32 +255,32 @@ def demostrar_ventajas_singleton():
     print("VENTAJAS DEL SINGLETON: GESTOR DE IMPRESIÓN")
     print("=" * 70)
     print("""
-    1. ✅ INSTANCIA ÚNICA
+    1.  INSTANCIA ÚNICA
        • Solo 1 gestión de impresión en toda la oficina
        • Imposible crear colas duplicadas accidentalmente
        • Garantiza un único punto de control
 
-    2. ✅ COLA ORDENADA
+    2.  COLA ORDENADA
        • Los trabajos se procesan en orden FIFO (primero en llegar, primero en salir)
        • No hay pérdida de trabajos
        • Todos los empleados saben que sus trabajos serán procesados
 
-    3. ✅ PUNTO DE ACCESO GLOBAL
+    3.  PUNTO DE ACCESO GLOBAL
        • Cualquier empleado (parte del programa) accede al mismo gestor
        • No necesita pasar referencias entre módulos
        • Código más limpio: GestorImpresion().enviar_trabajo(...)
 
-    4. ✅ SEGUIMIENTO CENTRALIZADO
+    4.  SEGUIMIENTO CENTRALIZADO
        • Historial completo de todos los trabajos
        • Reporte de impresiones procesadas
        • Auditoría y control de impresión
 
-    5. ✅ SINCRONIZACIÓN
+    5.  SINCRONIZACIÓN
        • Los trabajos no se sobrescriben
        • La impresora no recibe comandos contradictorios
        • Orden garantizado de ejecución
 
-    6. ✅ ESCALABILIDAD
+    6.  ESCALABILIDAD
        • Si agregas 100 empleados, siguen usando la MISMA cola
        • El código no cambia
        • Sin problemas de concurrencia
@@ -327,8 +302,6 @@ if __name__ == "__main__":
     print("Una oficina, una impresora, una cola, un Singleton".center(70))
     print("=" * 70)
     
-    # Mostrar el problema sin singleton
-    simular_oficina_sin_singleton()
     
     # Demostrar el singleton
     simular_oficina_con_singleton()
@@ -339,4 +312,4 @@ if __name__ == "__main__":
     # Mostrar ventajas
     demostrar_ventajas_singleton()
     
-    print("\n✅ Ejemplo completado exitosamente\n")
+    print("\n Ejemplo completado exitosamente\n")

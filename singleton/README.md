@@ -1,86 +1,144 @@
 # Patrón Creacional: Singleton
 
-## Descripción
+## 📖 Descripción
 
 El patrón **Singleton** es un patrón de diseño creacional que asegura que una clase tenga solo una instancia y proporciona un punto de acceso global a esa instancia.
 
-## Problema que resuelve
+### ¿Por qué es importante?
 
-En algunas aplicaciones, necesitamos que ciertos objetos existan en una única instancia:
-- **Conexiones a BD**: Solo una conexión activa
-- **Logger**: Un único punto de registro de eventos
-- **Caché**: Compartir datos entre toda la aplicación
-- **Configuración**: Una sola configuración para toda la app
-- **Sesión de usuario**: Solo un usuario autenticado actualmente
+En aplicaciones reales, algunos recursos **deben ser únicos**:
+- 🖨️ **Impresora**: Una sola impresora física compartida
+- 🗄️ **Base de datos**: Una única conexión activa
+- 📝 **Logger**: Un punto centralizado de registro
+- ⚙️ **Configuración**: Una sola configuración global
+- 🔐 **Sesión**: Un usuario autenticado actualmente
 
-## Estructura del Proyecto
+---
+
+## 📂 Estructura del Proyecto
 
 ```
 singleton/
-├── src/
-│   ├── __init__.py
-│   ├── singleton_metaclass.py      # Implementación con Metaclase
-│   ├── singleton_decorator.py      # Implementación con Decorador
-│   └── singleton_class_method.py   # Implementación con Método de Clase
-├── examples/
-│   ├── ejemplo_metaclase.py        # Ejemplos de uso con metaclase
-│   ├── ejemplo_decorador.py        # Ejemplos de uso con decorador
-│   ├── ejemplo_class_method.py     # Ejemplos de uso con método de clase
-│   └── ejemplo_comparativo.py      # Comparación de enfoques
-├── tests/
-│   └── test_singleton.py           # Tests unitarios
-└── README.md                       # Este archivo
-```
-
-## Implementaciones
-
-### 1. Metaclase (Recomendado para control máximo)
-
-```python
-class SingletonMeta(type):
-    _instances = {}
-    _lock = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            with cls._lock[cls]:
-                if cls not in cls._instances:
-                    instance = super().__call__(*args, **kwargs)
-                    cls._instances[cls] = instance
-        return cls._instances[cls]
-```
-
-**Ventajas:**
-- Control total sobre la creación de instancias
-- Thread-safe
-- Explícito
-
-**Desventajas:**
-- Más complejo
-- Requiere comprender metaclases
-
-**Uso:**
-```python
-class DatabaseConnection(metaclass=SingletonMeta):
-    pass
-
-db1 = DatabaseConnection()
-db2 = DatabaseConnection()
-assert db1 is db2  # ✓ Misma instancia
+├── patron/
+│   ├── ejemplo_gestor_impresion.py      # ✅ Ejemplo CON Singleton
+│   └── singleton_decorator.py           # ✅ Implementación del patrón
+│
+├── antipatron/
+│   └── ejemplo_gestor_impresion_sin_singleton.py  # ❌ Ejemplo SIN Singleton
+│
+├── doc/
+│   ├── README_COMPARACION.md            # 📊 Análisis detallado sin vs con
+│   ├── README_GESTOR_IMPRESION.md       # 🔧 Detalles técnicos del ejemplo
+│   ├── MAPAS_MENTALES_SINGLETON.md      # 🧠 Visualización ASCII
+│   ├── diagrama_secuencia_singleton.md  # 📋 Secuencia UML
+│   ├── diagrama_secuencia_singleton.png # 🖼️ Imagen del diagrama
+│   └── Ejemplo_practico.png             # 🖼️ Imagen del ejemplo
+│
+└── README.md                            # Este archivo
 ```
 
 ---
 
-### 2. Decorador (Recomendado para nuevas aplicaciones)
+## 🚀 Inicio Rápido
+
+### Ejecutar TODO (recomendado)
+```bash
+cd singleton
+python main.py
+```
+Esto ejecuta:
+1. ❌ Contraejemplo sin Singleton (demuestra problemas)
+2. ✅ Solución con Singleton (demuestra ventajas)
+3. 📊 Comparación y conclusiones
+
+### Ejecutar por separado
+
+**Ver el problema (sin Singleton):**
+```bash
+python antipatron/ejemplo_gestor_impresion_sin_singleton.py
+```
+
+**Ver la solución (con Singleton):**
+```bash
+python patron/ejemplo_gestor_impresion.py
+```
+
+---
+
+## 🔍 Ejemplo Práctico: Gestor de Impresión
+
+### El Caso de Uso
+
+Una oficina con:
+- **3 empleados** (Juan, María, Pedro) que necesitan imprimir
+- **1 impresora física** compartida en la red
+- **1 cola de impresión** (¿con o sin Singleton?)
+
+### ❌ SIN Singleton (El Problema)
+
+Cada empleado crea su propia cola:
+```python
+cola_juan = GestorImpresion()    # 🚨 Cola #1
+cola_maria = GestorImpresion()   # 🚨 Cola #2
+cola_pedro = GestorImpresion()   # 🚨 Cola #3
+```
+
+**Conflictos que ocurren:**
+1. **Múltiples colas** - ¿Cuál es la "verdadera" cola?
+2. **Referencias independientes** - `cola_juan is not cola_maria`
+3. **Estado inconsistente** - Cada uno ve diferente cantidad de trabajos
+4. **Race conditions** - Comandos conflictivos a la impresora
+
+**Resultado:** 💥 CAOS
+
+---
+
+### ✅ CON Singleton (La Solución)
 
 ```python
+@singleton
+class GestorImpresion:
+    def enviar_trabajo(self, empleado, documento, paginas):
+        self.cola_trabajos.append(...)
+```
+
+Todos usan LA MISMA instancia:
+```python
+gestor_juan = GestorImpresion()    # Instancia #1
+gestor_maria = GestorImpresion()   # Instancia #1 (misma!)
+gestor_pedro = GestorImpresion()   # Instancia #1 (misma!)
+
+gestor_juan is gestor_maria  # True ✅
+```
+
+**Ventajas:**
+- ✅ Una sola cola coordinada
+- ✅ Acceso global garantizado
+- ✅ Estado consistente
+- ✅ Thread-safe
+- ✅ Procesamiento FIFO
+
+**Resultado:** ✨ ORDEN Y SEGURIDAD
+
+---
+
+## 📚 Implementación del Patrón
+
+### Decorador Singleton
+
+```python
+from functools import wraps
+from threading import Lock
+
 def singleton(cls):
+    """Decorador que convierte una clase en Singleton"""
     instances = {}
     lock = Lock()
     
+    @wraps(cls)
     def get_instance(*args, **kwargs):
         if cls not in instances:
-            with lock:
+            with lock:  # ← Thread-safe
                 if cls not in instances:
                     instances[cls] = cls(*args, **kwargs)
         return instances[cls]
@@ -88,164 +146,127 @@ def singleton(cls):
     return get_instance
 ```
 
-**Ventajas:**
-- Simple y pythónico
-- Fácil de entender
-- Thread-safe
-- Reutilizable
+**Características:**
+- ✅ **Simple**: Fácil de entender
+- ✅ **Pythónico**: Usa decoradores
+- ✅ **Thread-safe**: Usa locks
+- ✅ **Reutilizable**: Aplica a cualquier clase
 
-**Desventajas:**
-- Requiere `()` al instanciar
-- Modifica la clase
+### Uso en el Proyecto
 
-**Uso:**
 ```python
+# patron/singleton_decorator.py
 @singleton
-class Logger:
-    pass
-
-logger1 = Logger()
-logger2 = Logger()
-assert logger1 is logger2  # ✓ Misma instancia
-```
-
----
-
-### 3. Método de Clase (Recomendado para herencia)
-
-```python
-class SingletonClassMethod:
-    _instance = None
-    _lock = Lock()
+class GestorImpresion:
+    def __init__(self):
+        self.cola_trabajos = []
     
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            with cls._lock:
-                if cls._instance is None:
-                    cls._instance = super().__new__(cls)
-        return cls._instance
-```
-
-**Ventajas:**
-- Enfoque clásico
-- Permite herencia
-- Thread-safe
-- Control explícito
-
-**Desventajas:**
-- Requiere heredar
-- Control de reinicialización manual
-
-**Uso:**
-```python
-class SessionManager(SingletonClassMethod):
-    pass
-
-session1 = SessionManager()
-session2 = SessionManager()
-assert session1 is session2  # ✓ Misma instancia
+    def enviar_trabajo(self, empleado, documento, paginas):
+        # Agregar a la única cola
+        self.cola_trabajos.append({...})
 ```
 
 ---
 
-## Ejemplos Incluidos
+## 📊 Comparación Visual
 
-### Metaclase
-- **DatabaseConnection**: Conexión única a base de datos
-- **ConfigurationManager**: Gestor de configuración global
+| Aspecto | SIN Singleton ❌ | CON Singleton ✅ |
+|---------|-----------------|-----------------|
+| **Instancias** | Múltiples (3+) | Una única |
+| **Colas** | Independientes | Centralizada |
+| **Identidad** | `obj1 is not obj2` | `obj1 is obj2` |
+| **Estado** | Inconsistente | Consistente |
+| **Thread Safety** | Problemático | Garantizado |
+| **Orden FIFO** | Imposible | Garantizado |
+| **Auditoría** | Imposible | Completa |
 
-### Decorador
-- **Logger**: Logger único para toda la aplicación
-- **CacheManager**: Gestor de caché centralizado
+---
 
-### Método de Clase
-- **SessionManager**: Gesión de sesión de usuario
-- **EmailService**: Servicio de envío de correos
+## 📖 Documentación Detallada
 
-## Ejecutar los Ejemplos
+Para profundizar, consulta estos archivos:
 
-```bash
-# Ejecutar ejemplo de metaclase
-python examples/ejemplo_metaclase.py
+### `doc/README_COMPARACION.md`
+- Análisis lado a lado sin vs con Singleton
+- Ejemplos de código
+- Tabla comparativa
 
-# Ejecutar ejemplo de decorador
-python examples/ejemplo_decorador.py
+### `doc/MAPAS_MENTALES_SINGLETON.md`
+- Visualización ASCII de los conflictos
+- Mapa mental del problema
+- Mapa mental de la solución
+- Analogías del mundo real
 
-# Ejecutar ejemplo de método de clase
-python examples/ejemplo_class_method.py
+### `doc/diagrama_secuencia_singleton.md`
+- Secuencia UML del patrón
+- Flujo de getInstance()
+- Mecanismo de sincronización
+- Thread-safety explicado
 
-# Ver comparación de enfoques
-python examples/ejemplo_comparativo.py
-```
+---
 
-## Ejecutar los Tests
+## 🎯 Cuándo Usar Singleton
 
-```bash
-# Ejecutar todos los tests
-python -m pytest tests/test_singleton.py -v
+### ✅ Usar Singleton cuando:
+- Existe un recurso **único** (impresora, BD, logger)
+- Necesitas un **punto de acceso global**
+- El recurso es **costoso** de crear
+- Necesitas **coordinación centralizada**
 
-# O usando unittest directamente
-python -m unittest tests.test_singleton -v
-```
+### ❌ NO usar Singleton cuando:
+- Necesitas **múltiples instancias** independientes
+- Quieres facilitar **tests unitarios**
+- La clase es **stateless** (sin estado)
+- Prefieres **inyección de dependencias**
 
-## Cuándo Usar Singleton
+---
 
-✓ **Usar Singleton cuando:**
-- Necesitas una única instancia (BD, Logger, Config)
-- Quieres un punto de acceso global
-- Los recursos son limitados
+## ⚡ Puntos Clave
 
-✗ **NO usar Singleton cuando:**
-- Necesitas múltiples instancias independientes
-- Quieres facilitar tests unitarios
-- La clase es stateless (sin estado)
+1. **Recurso Único** → Necesita Singleton
+   ```
+   UNA impresora física
+           ↓
+   UN punto de control (Singleton)
+   ```
 
-## Consideraciones Importantes
+2. **Instancia Única**
+   ```python
+   g1 = GestorImpresion()
+   g2 = GestorImpresion()
+   g1 is g2  # True
+   ```
 
-### Thread-Safety
-Todas las implementaciones incluyen locks para ser thread-safe:
-```python
-# Las tres implementaciones son seguras en ambientes multi-hilo
-```
+3. **Thread-Safe**
+   ```python
+   # El decorador usa Lock automáticamente
+   with lock:  # ← Protección incluida
+       if not existe:
+           crear_instancia()
+   ```
 
-### Testing
-Para testing, considera usar inyección de dependencias en lugar de Singleton:
-```python
-# Mejor que Singleton para testing
-def procesar_datos(logger: Logger, db: Database):
-    logger.info("Procesando...")
-    db.conectar()
-```
+4. **Acceso Global**
+   ```python
+   # Desde cualquier módulo
+   GestorImpresion().enviar_trabajo(...)  # Siempre la misma
+   ```
 
-### Alternativas Modernas
-- **Inyección de Dependencias**: Más testeable
-- **Módulos Python**: Para datos globales
-- **Context Managers**: Para manejo de recursos
+---
 
-## Comparación de Enfoques
-
-| Característica | Metaclase | Decorador | Método de Clase |
-|---|---|---|---|
-| Complejidad | Alta | Baja | Media |
-| Pythónico | No | Sí | Medio |
-| Thread-safe | Sí | Sí | Sí |
-| Herencia | Limitada | No | Sí |
-| Reutilizable | No | Sí | No |
-| Curva aprendizaje | Empinada | Plana | Media |
-
-## Recomendaciones
-
-1. **Para aplicaciones nuevas**: Usa **DECORADOR** (más simple)
-2. **Para control absoluto**: Usa **METACLASE** (máximo poder)
-3. **Para herencia**: Usa **MÉTODO DE CLASE** (permite subclases)
-4. **En duda**: Usa **DECORADOR** (más pythónico)
-
-## Recursos Adicionales
+## 🔗 Referencias
 
 - [Refactoring Guru - Singleton](https://refactoring.guru/es/design-patterns/singleton)
 - [Python Design Patterns](https://python-patterns.guide/python/singleton/)
 - [Design Patterns in Python](https://www.patterns.dev/posts/singleton-pattern/)
 
-## Autor
+---
 
-Patrón Singleton - Ejemplos educativos para aprender diseño de software
+## 📝 Nota Importante
+
+Este proyecto es **EDUCATIVO** y demuestra:
+- Por qué el Singleton es necesario en ciertos casos
+- Cómo implementarlo de forma correcta
+- Los problemas que resuelve
+- Las ventajas sobre el enfoque sin Singleton
+
+**Objetivo:** Aprender cuándo y cómo usar el patrón Singleton en Python.
