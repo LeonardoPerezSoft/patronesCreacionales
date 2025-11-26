@@ -280,43 +280,6 @@ Muestra cómo se vería el código sin usar el patrón:
 
 ---
 
-## Recomendaciones para diagramas
-
-Para complementar esta documentación, se recomienda incluir los siguientes diagramas:
-
-### 1. 📊 Diagrama de clases UML
-**Ubicación sugerida**: Sección "Estructura del patrón"
-- Muestra las interfaces y clases del patrón
-- Relaciones entre Abstract Factory, Concrete Factories y Products
-
-### 2. 📊 Diagrama de secuencia
-**Ubicación sugerida**: Sección "Patrón aplicado correctamente"
-- Flujo de creación de objetos
-- Interacción Cliente → Factory → Products
-
-### 3. 📊 Diagrama comparativo
-**Ubicación sugerida**: Sección "Relación con otros patrones"
-- Tabla visual comparando Abstract Factory vs Factory Method vs Builder
-
-### 4. 📊 Diagrama de componentes
-**Ubicación sugerida**: Antes de "Ejemplos de código"
-- Muestra la estructura del proyecto y cómo se relacionan los módulos
-
-### Herramientas recomendadas para crear diagramas:
-- [draw.io](https://app.diagrams.net/) - Gratuito y fácil de usar
-- [PlantUML](https://plantuml.com/) - Diagramas como código
-- [Mermaid](https://mermaid.js.org/) - Integración con Markdown
-- [Lucidchart](https://www.lucidchart.com/) - Profesional
-
----
-
-## Referencias
-
-- **Gang of Four** - "Design Patterns: Elements of Reusable Object-Oriented Software"
-- **Refactoring Guru** - [Abstract Factory](https://refactoring.guru/design-patterns/abstract-factory)
-- **Python Design Patterns** - Brandon Rhodes
-
----
 
 ## Ejecución de ejemplos
 
@@ -331,7 +294,3 @@ python abstract_factory.py
 ```
 
 ---
-
-**Autor**: Documentación creada como material educativo sobre patrones de diseño.
-
-**Licencia**: MIT
