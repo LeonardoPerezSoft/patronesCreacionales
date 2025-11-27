@@ -1,6 +1,3 @@
-🌟 README con toque visual mejorado (versión final)
-
-Copia esto dentro de tu Prototype/README.md:
 
 📄 Patrón Prototype – Plantillas de Documentos (Word/Google Docs)
 
