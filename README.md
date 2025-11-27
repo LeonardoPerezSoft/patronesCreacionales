@@ -234,7 +234,8 @@ Mantenimiento	❌ Difícil	✅ Fácil
 Parámetros opcionales	❌ Caos	✅ Ordenados
 Extensibilidad	❌ Baja	✅ Alta
 
-Descripcion de la imagen
+
+Descripcion de la imagen Builder2
 
 Patrón Creacional: Builder
 Descripción
