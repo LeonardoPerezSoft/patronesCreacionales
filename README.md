@@ -233,3 +233,170 @@ Riesgo de errores	❌ Alto	✅ Bajo
 Mantenimiento	❌ Difícil	✅ Fácil
 Parámetros opcionales	❌ Caos	✅ Ordenados
 Extensibilidad	❌ Baja	✅ Alta
+
+Descripcion de la imagen
+
+Patrón Creacional: Builder
+Descripción
+
+El patrón Builder es un patrón de diseño creacional que permite construir objetos complejos paso a paso, separando la lógica de construcción de la representación final.
+Esto permite crear diferentes versiones de un mismo objeto usando el mismo proceso de construcción.
+
+Problema que resuelve
+
+Cuando un objeto tiene muchos parámetros, configuraciones opcionales o necesita construirse por etapas, aparecen problemas como:
+
+Constructores gigantes con 10+ parámetros 😵
+
+Código difícil de leer porque no se entiende qué significa cada parámetro
+
+Alta probabilidad de errores
+
+Instancias mal construidas
+
+Clases que violan el principio SRP (Single Responsibility Principle)
+
+Ejemplo de antipatrón:
+
+Casa(4, 8, True, False, True, None, "teja", "concreto")
+
+
+Nadie entiende qué es cada True o False.
+
+Builder elimina este caos, haciendo el código claro, legible y seguro.
+
+Estructura del Proyecto
+builder/
+├── antipatron_builder.py      # Ejemplo del problema sin Builder
+├── patron_builder.py          # Implementación correcta del patrón Builder
+└── README.md                  # Este archivo
+
+Explicación del Builder (según el diagrama)
+
+La imagen representa perfectamente el funcionamiento del patrón:
+
+🧍‍♂️ Client
+
+Es quien solicita el producto.
+
+No sabe cómo se construye, solo sabe qué quiere.
+
+👔 Director
+
+Es el jefe de obra.
+
+Ordena los pasos de construcción.
+
+No construye nada, solo coordina.
+
+🏗️ Builder
+
+Es quien hacer el trabajo de construcción.
+
+Cada Builder construye una versión distinta del producto final:
+
+CasaModernaBuilder
+
+CasaLujoBuilder
+
+CasaCampestreBuilder
+
+Debe implementar los pasos definidos por el director.
+
+🏠 Product
+
+Es el objeto final completamente construido.
+
+En el ejemplo: una Casa con todas sus partes listas.
+
+En resumen:
+
+El Director decide el orden.
+El Builder implementa los pasos.
+El Product es el resultado final.
+
+Implementación del Código
+Builder (Pasos de construcción)
+class CasaBuilder:
+    def __init__(self):
+        self.casa = Casa()
+
+    def construir_puertas(self):
+        pass
+
+    def construir_ventanas(self):
+        pass
+
+    def construir_techo(self):
+        pass
+
+    def get_resultado(self):
+        return self.casa
+
+Builder Concreto
+class CasaModernaBuilder(CasaBuilder):
+    def construir_puertas(self):
+        self.casa.puertas = 2
+
+    def construir_ventanas(self):
+        self.casa.ventanas = 6
+
+    def construir_techo(self):
+        self.casa.techo = "moderno"
+
+Director (Jefe de Obra)
+class Director:
+    def construir_casa_basica(self, builder):
+        builder.construir_puertas()
+        builder.construir_ventanas()
+        builder.construir_techo()
+        return builder.get_resultado()
+
+Ejemplo de Uso
+director = Director()
+builder = CasaModernaBuilder()
+
+casa = director.construir_casa_basica(builder)
+
+print(casa)
+
+
+Salida ejemplo:
+
+Casa(puertas=2, ventanas=6, techo='moderno')
+
+Cuándo usar Builder
+
+✓ Cuando tu objeto necesita muchos pasos para construirse
+✓ Cuando tienes muchas versiones del mismo producto
+✓ Cuando quieres evitar constructores gigantes
+✓ Cuando quieres un código más legible y mantenible
+✓ Cuando el orden de construcción importa
+
+❌ No lo uses cuando el objeto es simple.
+
+Ventajas del Builder
+
+Código más limpio y entendible
+
+Evita constructores gigantes
+
+Permite crear objetos paso a paso
+
+Separa la representación (producto) de la construcción (builder)
+
+Permite múltiples versiones del mismo objeto
+
+Facilita aplicar el principio SOLID (SRP)
+
+Imagen recomendada para la explicación
+
+La imagen que acompaña este README muestra:
+
+Cliente → solicita la construcción
+
+Director → organiza el proceso
+
+Builder → construye
+
+Producto final → casa terminada
